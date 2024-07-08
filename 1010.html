@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparador de Respuestas</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        padding: 20px;
+    }
+    form {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+        text-align: center;
+    }
+    label {
+        display: block;
+        margin-bottom: 8px;
+    }
+    input[type="text"] {
+        width: calc(50% - 12px);
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+    .resultado {
+        margin-top: 20px;
+        border-top: 2px solid #ccc;
+        padding-top: 10px;
+    }
+    .correcto {
+        color: blue;
+    }
+    .usuario {
+        color: green;
+    }
+</style>
+</head>
+<body>
+
+<form id="formulario">
+    <h2>Formulario de Respuestas</h2>
+    <div id="preguntas">
+        <!-- Aquí se generan dinámicamente las preguntas -->
+    </div>
+    <button type="button" onclick="comparar()">Comparar Respuestas</button>
+</form>
+
+<div id="resultado" class="resultado">
+    <!-- Aquí se mostrarán los resultados -->
+</div>
+
+<script>
+    // Datos de las preguntas y respuestas
+    const preguntasRespuestas = [
+        {
+            enunciado: "Como se mide el excedente del consumidor (pág. 145)",
+            respuestaA: "valor para los compradores",
+            respuestaB: "cantidad pagada por los compradores"
+        },
+        {
+            enunciado: "Como se mide el excedente del productor (pág. 145)",
+            respuestaA: "cantidad recibida por los vendedores",
+            respuestaB: "costo para los vendedores"
+        },
+        {
+            enunciado: "Entonces podemos escribir el excedente total como (pág 145)",
+            respuestaA: "Valor para los compradores",
+            respuestaB: "Costo para los vendedores"
+        },
+        {
+            enunciado: "Son herramientas básicas que utilizan los economistas para estudiar el bienestar de los compradores y vendedores (pág. 145)",
+            respuestaA: "excedente del consumidor",
+            respuestaB: "excedente del productor"
+        },
+        {
+            enunciado: "Si una asignación no es eficiente, entonces existen ganancias potenciales del comercio entre. (pág. 146)",
+            respuestaA: "Vendedores",
+            respuestaB: "Compradores"
+        },
+        {
+            enunciado: "La oferta y la demanda determinan. (pág. 135)",
+            respuestaA: "Precios",
+            respuestaB: "Servicios"
+        },
+        {
+            enunciado: "Este análisis nos lleva a una profunda conclusión (pág. 136)",
+            respuestaA: "Equilibrio de la oferta",
+            respuestaB: "Demanda en el mercado"
+        },
+        {
+            enunciado: "Una planificación social necesita conocer el valor de cada consumidor potencial atribuye un bien en particular en él. (pág. 149)",
+            respuestaA: "Mercado",
+            respuestaB: "Costo de cada productor potencial"
+        },
+        {
+            enunciado: "Para entender mejor la medida del bienestar económico, es importante recordar cómo se mide el. (pág. 145)",
+            respuestaA: "Excedente del consumidor",
+            respuestaB: "Excedente del Productor"
+        },
+        {
+            enunciado: "Estas observaciones nos llevan a dos puntos sobre los resultados del mercado.",
+            respuestaA: "Los mercados libres asignan la oferta de bienes a los compradores que los valoran más, medido por su disposición a pagar.",
+            respuestaB: "Los mercados libres asignan la demanda de bienes a los vendedores que pueden producirlos al costo más bajo."
+        },
+        {
+            enunciado: "El planificador social escogerá la cantidad donde se intersecan. (pág. 148)",
+            respuestaA: "La curva de la oferta",
+            respuestaB: "La curva de la demanda"
+        },
+        {
+            enunciado: "El valor total es:",
+            respuestaA: "Valor para los compradores",
+            respuestaB: "Menos Costo para los vendedores."
+        },
+        {
+            enunciado: "El planificador social benevolente es un. Pág. 146",
+            respuestaA: "Dictador todopoderoso",
+            respuestaB: "Omnisapiente",
+            respuestaC: "Bien intencionado"
+        }
+    ];
+
+    // Función para generar el formulario dinámicamente
+    function generarFormulario() {
+        const preguntasDiv = document.getElementById('preguntas');
+        preguntasRespuestas.forEach((pregunta, index) => {
+            const divPregunta = document.createElement('div');
+            divPregunta.innerHTML = `
+                <h3>Pregunta ${index + 1}</h3>
+                <p><strong>${pregunta.enunciado}</strong></p>
+                <label>a) Respuesta A:</label>
+                <input type="text" id="respuestaA${index}" required>
+                <label>b) Respuesta B:</label>
+                <input type="text" id="respuestaB${index}" required>
+            `;
+            preguntasDiv.appendChild(divPregunta);
+        });
+    }
+
+    // Función para comparar respuestas
+    function comparar() {
+        const resultadosDiv = document.getElementById('resultado');
+        resultadosDiv.innerHTML = ''; // Limpiar resultados anteriores
+
+        preguntasRespuestas.forEach((pregunta, index) => {
+            const respuestaA = document.getElementById(`respuestaA${index}`).value.trim();
+            const respuestaB = document.getElementById(`respuestaB${index}`).value.trim();
+
+            const divResultado = document.createElement('div');
+            divResultado.innerHTML = `
+                <p><strong>${pregunta.enunciado}</strong></p>
+                <p>a) Respuesta A:</p>
+                <p class="${respuestaA.toLowerCase() === pregunta.respuestaA.toLowerCase() ? 'correcto' : 'usuario'}">${pregunta.respuestaA}</p>
+                <p class="${respuestaA.toLowerCase() === pregunta.respuestaA.toLowerCase() ? 'usuario' : 'correcto'}">${respuestaA}</p>
+                <p>b) Respuesta B:</p>
+                <p class="${respuestaB.toLowerCase() === pregunta.respuestaB.toLowerCase() ? 'correcto' : 'usuario'}">${pregunta.respuestaB}</p>
+                <p class="${respuestaB.toLowerCase() === pregunta.respuestaB.toLowerCase() ? 'usuario' : 'correcto'}">${respuestaB}</p>
+            `;
+            resultadosDiv.appendChild(divResultado);
+        });
+    }
+
+    // Generar el formulario al cargar la página
+    window.onload = function() {
+        generarFormulario();
+    };
+</script>
+
+</body>
+</html>
